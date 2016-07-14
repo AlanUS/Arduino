@@ -1,0 +1,35 @@
+#######################################
+# Syntax Coloring Map For LEDEffects
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LEDEffects	 KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+attach	 	KEYWORD2
+readPin		KEYWORD2
+update	 	KEYWORD2
+off 			KEYWORD2
+on 				KEYWORD2
+setPermanent KEYWORD2
+setTimer	KEYWORD2
+setFixed 	KEYWORD2
+setBlink	KEYWORD2
+memOn			KEYWORD2
+memOff		KEYWORD2
+restoreSetpoint KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
