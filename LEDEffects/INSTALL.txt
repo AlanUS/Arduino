@@ -1,0 +1,2 @@
+Create a "LEDEffects" folder in your Arduino folder.
+Copy all files into this folder.
