@@ -70,6 +70,9 @@ public:
 	// will start blinking using the current setpoint (starting cycle OFF if setpoint is OFF and vice versa)
 	void setBlink(uint16_t blinkTime);
 
+	// memorize current setpoint
+	void memSetpoint();
+
 	// memorize setpoint ON
 	void memOn();
 

@@ -33,8 +33,8 @@
 	} // constructor
 
 	/*****************************************************************************************
-	* function name: attach()
-	* arguments: pin number
+	* method name: attach()
+	* arguments: pin number (byte/uint8_t)
 	* returns: nothing (void)
 	*
 	* Description:
@@ -51,14 +51,23 @@
 		blinkTime_ = LEDEFF_NOBLINK ;
 		endTime_ = LEDEFF_NOTIMER ;
 		altBlinkTime_ = LEDEFF_NOTIMER ;
-	} // function: attach
-
-	uint8_t LEDEffects::readPin(){
-	 return pin_;
-	}	 // function: readPin
+	} // method: attach
 
 	/*****************************************************************************************
-	* function name: update()
+	* method name: readPin()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* returns pin number to which LED is attached.
+	* retourne le numéro de pin auquel la LED est assignée.
+	*****************************************************************************************/
+	uint8_t LEDEffects::readPin(){
+	 return pin_;
+	}	 // method: readPin
+
+	/*****************************************************************************************
+	* method name: update()
 	* arguments: none
 	* returns: nothing (void)
 	*
@@ -109,10 +118,10 @@
 
 		// To be executed at all times
 		digitalWrite(pin_, status_); // send the LED status to Arduino
-	} // function: update
+	} // method: update
 
 	/*****************************************************************************************
-	* function name: handleBlinking()
+	* method name: handleBlinking()
 	* arguments: none
 	* returns: nothing (void)
 	*
@@ -135,55 +144,144 @@
 		{
 			status_ = setpoint_ & LEDEFF_ON ; // status: LED on or off depending on setpoint first bit.
 		}
-	}  // function: handleBlinking
+	}  // method: handleBlinking
 
-	// Turn off LED
+	/*****************************************************************************************
+	* method name: off()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* turn off LED.
+	* éteint la LED.
+	*****************************************************************************************/
 	void LEDEffects::off(){
 			setpoint_ &= ~LEDEFF_ON ; // setpoint: LED off - consigne: extinction de la LED
-	} // function: off
+	} // method: off
 
-	// Set LED on - Light up!
+	/*****************************************************************************************
+	* method name: on()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* turn on LED. Light up!
+	* allume la LED.
+	*****************************************************************************************/
 	void LEDEffects::on(){
 			setpoint_ |= LEDEFF_ON ; // setpoint: LED on - consigne: allumage de la LED
-	} // function: on
+	} // method: on
 
-	// Set the LED setpoint to be permanent (no time out) - overrides setTimer
+	/*****************************************************************************************
+	* method name: setPermanent()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* Set the LED setpoint to be permanent (no time out) - overrides setTimer.
+	* Consigne allumage permanent (pas de temporisation) - invalide setTimer.
+	*****************************************************************************************/
 	void LEDEffects::setPermanent(){
 			setpoint_ &= ~LEDEFF_TIMED ; // setpoint: no time out - consigne: pas de temporisation
-	} // function: setPermanent
+	} // method: setPermanent
 
-	// Set timer, expressed in ms - overrides setPermanent
+	/*****************************************************************************************
+	* method name: setTimer()
+	* arguments: timer value in ms (unsigned long)
+	* returns: nothing (void)
+	*
+	* Description:
+	* Set timer, expressed in ms - overrides setPermanent.
+	* Initialise la temporisation (en ms) - invalide setPermanent.
+	*****************************************************************************************/
 	void LEDEffects::setTimer(unsigned long timer){
 			endTime_ = millis() + timer;  // set the end time (time out)
 			setpoint_ |= LEDEFF_TIMED ; // setpoint: timer on - consigne: temporisation
-	} // function: setTimer
+	} // method: setTimer
 
-	// Set fixed lighting - overrides setBlink and other effects.
+	/*****************************************************************************************
+	* method name: setFixed()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* Set fixed lighting - overrides setBlink and other effects.
+	* Consigne allumage fixe - invalide setBlink et autres effets.
+	*****************************************************************************************/
 	void LEDEffects::setFixed(){
 			setpoint_ &= ~LEDEFF_BLINK ; // setpoint: no blink - consigne: pas de clignotement
-	} // function: setFixed
+	} // method: setFixed
 
-	// Set blink period, expressed in ms - LED in ON during "BlinkTime", then OFF during "BlinkTime", etc.
-	// will start blinking using the current setpoint (starting cycle OFF if setpoint is OFF and vice versa)
+	/*****************************************************************************************
+	* method name: setBlink()
+	* arguments: blinking period in ms (unsigned int/uint16_t)
+	* returns: nothing (void)
+	*
+	* Description:
+	* Set blink period, expressed in ms
+	* LED in ON during "BlinkTime", then OFF during "BlinkTime", etc. - overrides setFixed
+	* will start blinking using the current setpoint (starting cycle OFF if setpoint is OFF and vice versa)
+	* Initialise la période de clignotement (en ms)
+	* la LED est allumée pendant "BlinkTime", puis éteinte pendant "BlinkTime", etc.  - invalide setFixed.
+	* commencera à clignoter en utilisant la consigne courante (cycle commençant éteint si la consigne est à OFF et vice versa)
+	*****************************************************************************************/
 	void LEDEffects::setBlink(uint16_t blinkTime){
 			blinkTime_	= blinkTime;
 			altBlinkTime_ = millis() ;  // use the current (absolute) time in order to force blink alternate at next cycle
 			setpoint_ |= LEDEFF_BLINK ; // setpoint: blinking on - consigne: clignotement
 			status_ = !(setpoint_ & LEDEFF_ON); // set status to inverse of setpoint, as it will be toggled immediately at next cycle
-	} // function: setBlink
+	} // method: setBlink
 
-	// memorize setpoint ON
+	/*****************************************************************************************
+	* method name: memSetpoint()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* memorize current setpoint.
+	* mémorise la consigne courante.
+	*****************************************************************************************/
+	void LEDEffects::memSetpoint(){
+			setpointMemo_	= setpoint_;
+	} // method: memSetpoint
+	
+	/*****************************************************************************************
+	* method name: memOn()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* memorize setpoint ON, fixed, permanent.
+	* mémorise l'état allumé, fixe et permanent.
+	*****************************************************************************************/
 	void LEDEffects::memOn(){
 			setpointMemo_	= LEDEFF_ON;
-	} // function: memOn
+	} // method: memOn
 
-	// memorize setpoint OFF
+	/*****************************************************************************************
+	* method name: memOff()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* memorize setpoint OFF, fixed, permanent.
+	* mémorise l'état éteint, fixe et permanent.
+	*****************************************************************************************/
 	void LEDEffects::memOff(){
 			setpointMemo_	= LEDEFF_OFF;
-	} // function: memOff
+	} // method: memOff
 
+	/*****************************************************************************************
+	* method name: restoreSetpoint()
+	* arguments: none
+	* returns: nothing (void)
+	*
+	* Description:
+	* restore memorized setpoint.
+	* rétablit l'état mémorisé.
+	*****************************************************************************************/
 	// restore memorized setpoint
 	void LEDEffects::restoreSetpoint(){
 			setpoint_ = setpointMemo_;
-	} // function: restoreStatus
+	} // method: restoreStatus
 
