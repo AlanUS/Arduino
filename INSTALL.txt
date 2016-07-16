@@ -1,2 +1,11 @@
-Create a "LEDEffects" folder in your Arduino folder.
-Copy all files into that folder.
+Manual installation:
+Create a "LEDEffects" folder in your Arduino "libraries" folder. To identify this location open "File -> Preferences".
+Unzip all files into that folder.
+
+Installation from Arduino IDE:
+Select "Sketch -> Include Library -> Add .ZIP libraries" and select the ZIP file that contains the "LEDEffects" library.
+This will create a folder in the Arduino "libraries" folder and unzip all files in it.
+You may wish to rename that folder into "LEDEffects" without version number and other prefix for clarity. Changing the folder name has no incidence on the Arduino IDE, nor on compilation.
+
+To use the library:
+Select "Sketch -> Include Library -> LEDEffects" to import the library to your sketch. An "#include <LEDEffects.h>" line will appear at the top of your sketch.
