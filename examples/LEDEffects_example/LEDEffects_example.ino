@@ -21,7 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * History
- * v1 (17/07/2016) - Creation
+ * v1.0 (14/07/2016) - Creation
+ * v1.1 (17/07/2016) - Add flash method
  */
 #include <LEDEffects.h>
 
@@ -29,12 +30,14 @@
 #define LED2_PIN  11
 #define LED3_PIN  10
 #define LED4_PIN  9
+#define LED5_PIN  8
 
   // create the LEDEffects objects.
   LEDEffects myLED1;
   LEDEffects myLED2;
   LEDEffects myLED3;
   LEDEffects myLED4;
+  LEDEffects myLED5;
 
 void setup() {
   // initialise and attach pin to each LED
@@ -42,6 +45,7 @@ void setup() {
   myLED2.attach(LED2_PIN);
   myLED3.attach(LED3_PIN);
   myLED4.attach(LED4_PIN);
+  myLED5.attach(LED5_PIN);
 
   // Set LED 1 on permanent ON
   myLED1.on();
@@ -70,6 +74,11 @@ void setup() {
   myLED4.setBlink(250);
   // memorize LED 4 setpoint
   myLED4.memOn();
+
+  // Set LED 5 on flash during 35 s
+  myLED5.off();
+  myLED5.setTimer(35000);
+  myLED5.setFlash(100, 1000);
 }
 
 void loop() {
@@ -78,6 +87,7 @@ void loop() {
   myLED2.update();
   myLED3.update();
   myLED4.update();
+  myLED5.update();
 
   // Do what you have to do here. The LEDs will be handled without blocking your program.
 

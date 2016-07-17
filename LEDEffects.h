@@ -21,7 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * History
- * v1 (14/07/2016) - Creation
+ * v1.0 (14/07/2016) - Creation
+ * v1.1 (17/07/2016) - Add flash method
  */
 
 #ifndef LEDEFFECTS_H
@@ -31,6 +32,7 @@
 #define LEDEFF_ON  			1 // bit 0 - equivalent to HIGH
 #define LEDEFF_TIMED  	2 // bit 1
 #define LEDEFF_BLINK  	4 // bit 2
+#define LEDEFF_FLASH		8	// bit 3
 
 #define LEDEFF_NOBLINK  0 // set value to 0 for no blinking
 #define LEDEFF_NOTIMER  0 // set value to 0 for permanent setpoint (not timed out)
@@ -63,12 +65,16 @@ public:
 	// Set timer, expressed in ms - overrides setPermanent
 	void setTimer(unsigned long timer);
 
-	// Set fixed lighting - overrides setBlink and other effects.
+	// Set fixed lighting - overrides setBlink, setFlash and other effects.
 	void setFixed();
 
 	// Set blink period, expressed in ms - LED in ON during "BlinkTime", then OFF during "BlinkTime", etc.
 	// will start blinking using the current setpoint (starting cycle OFF if setpoint is OFF and vice versa)
 	void setBlink(uint16_t blinkTime);
+
+	// Set flash time and cycle period, expressed in ms - LED in ON during "flashTime", then OFF until "cycleTime" is over, etc.
+	// cycle will start by a flash
+	void setFlash(uint16_t flashTime, uint16_t cycleTime);
 
 	// memorize current setpoint
 	void memSetpoint();
@@ -95,11 +101,13 @@ private:
 	/* 	Bit 0 = On (1) = LEDEFF_ON / Off (0) = LEDEFF_OFF
 	 * 	Bit 1 = Timed (1) = LEDEFF_TIMED / Permanent (0)
 	 * 	Bit 2 = Blinking (1) = LEDEFF_BLINK / Fixed (0)
+	 * 	Bit 3 = Flashing (1) = LEDEFF_FLASH / Fixed (0)
 	 */
 	/* consigne d'allumage:	 */
 	/*	Bit 0 = Allumé (1) = LEDEFF_ON / Eteint (0) = LEDEFF_OFF
 	 *	Bit 1 = Temporisé (1) = LEDEFF_TIMED / Permanent (0)
 	 *	Bit 2 = Clignotant (1) = LEDEFF_BLINK / Fixe (0)
+	 * 	Bit 3 = Flash (1) = LEDEFF_FLASH / Fixe (0)
 	 */
 	uint8_t setpoint_;
 
@@ -107,6 +115,10 @@ private:
 	/* valeur de la temporisation pour le clignotement, en ms - ignoré si la consigné est allumage fixe. */
 	// default = LEDEFF_NOBLINK
   uint16_t blinkTime_; // unsigned int
+
+	// Flashing timer value, in ms - ignored is setpoint if permanent On.
+	/* valeur de la temporisation pour le flash, en ms - ignoré si la consigné est allumage fixe. */
+  uint16_t flashTime_; // unsigned int
 
 	// Memorized status of the LED, to be used when some function lead to temporary extinction of all LEDs
 	/* Mémorisation du statut courant de la LED, pour utilisation lorsque certaines fonctions conduisent à éteindre temporairement toutes les LEDs */

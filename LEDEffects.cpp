@@ -21,7 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * History
- * v1 (14/07/2016) - Creation
+ * v1.0 (14/07/2016) - Creation
+ * v1.1 (17/07/2016) - Add flash method
  */
 
 #include "Arduino.h"
@@ -49,6 +50,7 @@
 		setpoint_ = LEDEFF_OFF ;
 		setpointMemo_ = setpoint_ ;
 		blinkTime_ = LEDEFF_NOBLINK ;
+		flashTime_ = LEDEFF_NOBLINK ;
 		endTime_ = LEDEFF_NOTIMER ;
 		altBlinkTime_ = LEDEFF_NOTIMER ;
 	} // method: attach
@@ -140,10 +142,28 @@
 				altBlinkTime_ = (unsigned long) (millis() +  blinkTime_); // next value for blink time - prochaine valeur pour la temporisation
 			 } // end of test for toggle blinking  - fin de test pour l'alternance de clignotement
 		}
-		else // fixed lighting - allumage fixe
+		else // not blinking mode
 		{
-			status_ = setpoint_ & LEDEFF_ON ; // status: LED on or off depending on setpoint first bit.
-		}
+			if (setpoint_ & LEDEFF_FLASH)  // Are we in flashing mode? - Est-ce que l'on est en mode flash ?
+			// flash mode
+			{
+				if (altBlinkTime_ < millis())  // Are we over the toggle flashing period time? - Est-ce que l'on a dépassé la tempo d'alternance de flash ?
+					// Yes, need to the change flash status - Oui, il faut changer le flash
+				{
+					if (status_ == LEDEFF_OFF){ // alternate to flash on
+						altBlinkTime_ = (unsigned long) (millis() +  flashTime_); // next value for flash time - prochaine valeur pour la temporisation	 de flash
+					}
+					else { // turn off flash time during the remaining of cycle
+						altBlinkTime_ = (unsigned long) (millis() +  (blinkTime_-flashTime_)); // next value for flash time - prochaine valeur pour la temporisation de flash
+					}
+					status_ = !status_; // toggle LED status - inversion de l'état de la LED
+				 } // end of test for toggle flash  - fin de test pour l'alternance de flash
+			}
+			else  // fixed lighting - allumage fixe
+			{
+				status_ = setpoint_ & LEDEFF_ON ; // status: LED on or off depending on setpoint first bit.
+			} // test flashing
+		} // test blinking
 	}  // method: handleBlinking
 
 	/*****************************************************************************************
@@ -229,8 +249,36 @@
 			blinkTime_	= blinkTime;
 			altBlinkTime_ = millis() ;  // use the current (absolute) time in order to force blink alternate at next cycle
 			setpoint_ |= LEDEFF_BLINK ; // setpoint: blinking on - consigne: clignotement
+			setpoint_ &= ~LEDEFF_FLASH ; // setpoint: no flash - consigne: pas de flash
 			status_ = !(setpoint_ & LEDEFF_ON); // set status to inverse of setpoint, as it will be toggled immediately at next cycle
 	} // method: setBlink
+
+	/*****************************************************************************************
+	* method name: setFlash()
+	* arguments: flash time and cycle period in ms (unsigned int/uint16_t)
+	* returns: nothing (void)
+	*
+	* Description:
+	* Set flash time and cycle period, expressed in ms
+	* LED in ON during "flashTime", then OFF until "cycleTime" is over, etc. - overrides setFixed
+	* cycle will start by a flash
+	* Initialise la durée du flash et le cylce (en ms)
+	* la LED est allumée pendant "flashTime", puis éteinte jusqu'à la fin du cyle "cycleTime", etc.  - invalide setFixed.
+	* le cycle commencera par un flash
+	*****************************************************************************************/
+	void LEDEffects::setFlash(uint16_t flashTime, uint16_t cycleTime) {
+			flashTime_	= flashTime;
+			if (cycleTime > flashTime) { // cycleTime has to be higher than flashTime
+				blinkTime_	= cycleTime;
+			}
+			else { // otherwise cycle time with be equal to flash time, i.e. no flash
+				blinkTime_ = flashTime;
+			}
+			altBlinkTime_ = millis() ;  // use the current (absolute) time in order to force flash alternate at next cycle
+			setpoint_ &= ~LEDEFF_BLINK ; // setpoint: no blink - consigne: pas de clignotement
+			setpoint_ |= LEDEFF_FLASH ; // setpoint: flash on - consigne: flash
+			status_ = LEDEFF_OFF ; // set status to Off, as it will be toggled immediately at next cycle
+	}	// method: setFlash
 
 	/*****************************************************************************************
 	* method name: memSetpoint()

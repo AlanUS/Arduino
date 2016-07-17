@@ -21,6 +21,7 @@ setPermanent	KEYWORD2
 setTimer	KEYWORD2
 setFixed 	KEYWORD2
 setBlink	KEYWORD2
+setFlash	KEYWORD2
 memSetpoint	KEYWORD2
 memOn			KEYWORD2
 memOff		KEYWORD2
