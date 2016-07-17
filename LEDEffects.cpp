@@ -56,7 +56,7 @@
 	/*****************************************************************************************
 	* method name: readPin()
 	* arguments: none
-	* returns: nothing (void)
+	* returns: pin number (byte/uint8_t)
 	*
 	* Description:
 	* returns pin number to which LED is attached.
@@ -244,7 +244,7 @@
 	void LEDEffects::memSetpoint(){
 			setpointMemo_	= setpoint_;
 	} // method: memSetpoint
-	
+
 	/*****************************************************************************************
 	* method name: memOn()
 	* arguments: none
