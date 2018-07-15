@@ -6,25 +6,25 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-LEDEffects	 KEYWORD1
+LEDEffects	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-attach	 	KEYWORD2
-readPin		KEYWORD2
-update	 	KEYWORD2
-off 			KEYWORD2
-on 				KEYWORD2
+attach	KEYWORD2
+readPin	KEYWORD2
+update	KEYWORD2
+off	KEYWORD2
+on	KEYWORD2
 setPermanent	KEYWORD2
 setTimer	KEYWORD2
-setFixed 	KEYWORD2
+setFixed	KEYWORD2
 setBlink	KEYWORD2
 setFlash	KEYWORD2
 memSetpoint	KEYWORD2
-memOn			KEYWORD2
-memOff		KEYWORD2
+memOn	KEYWORD2
+memOff	KEYWORD2
 restoreSetpoint	KEYWORD2
 
 #######################################
